@@ -34,7 +34,8 @@ jobs:
         if: always()
         run: |
           if [ -d work/install ]; then
-            tar -czf couchbase-ce-6.6.1-linux-amd64.tar.gz -C work install
+            sudo tar -czf couchbase-ce-6.6.1-linux-amd64.tar.gz -C work install
+            sudo chown "$USER" couchbase-ce-6.6.1-linux-amd64.tar.gz
             ls -lh couchbase-ce-6.6.1-linux-amd64.tar.gz
           else
             echo "No install dir produced"
