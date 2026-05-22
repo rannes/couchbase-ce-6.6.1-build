@@ -27,3 +27,6 @@ Artifact `couchbase-ce-6.6.1` will be attached to the workflow run.
 - CMake is bumped to 3.19 (Bionic ships 3.10, Couchbase needs ≥ 3.12).
 - `BUILD_ENTERPRISE=OFF` — produces CE binaries; excludes analytics,
   eventing-ee, backup-service, etc.
+- `tlm/cmake/Modules/CBDownloadDeps.cmake` — Go download URL rewritten
+  from `storage.googleapis.com/golang/` (404s on old versions) to
+  `dl.google.com/go/`.

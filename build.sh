@@ -22,6 +22,11 @@ fi
 
 repo sync -j"$(nproc)" --force-sync || echo "repo sync had errors; continuing"
 
+# Old Go versions (1.7.6 .. 1.13) are no longer at storage.googleapis.com/golang/
+# but ARE at dl.google.com/go/. Redirect tlm's downloader.
+sed -i 's|http://storage.googleapis.com/golang|https://dl.google.com/go|g' \
+  tlm/cmake/Modules/CBDownloadDeps.cmake
+
 # CE build: disable enterprise modules.
 make -j"$(nproc)" EXTRA_CMAKE_OPTIONS="-DBUILD_ENTERPRISE=OFF"
 
