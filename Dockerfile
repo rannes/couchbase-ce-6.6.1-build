@@ -8,9 +8,12 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     libssl-dev libnuma-dev libsnappy-dev liblz4-dev \
     libcurl4-openssl-dev libtool autoconf automake \
     pkg-config m4 ninja-build flex bison ed unzip wget \
-    ca-certificates gnupg sudo \
+    ca-certificates gnupg sudo locales \
     libncurses5 libssl1.1 libsctp1 \
+  && locale-gen en_US.UTF-8 \
   && rm -rf /var/lib/apt/lists/*
+
+ENV LANG=en_US.UTF-8 LC_ALL=en_US.UTF-8
 
 # Bionic ships cmake 3.10; Couchbase 6.6.1 needs >= 3.12.
 RUN wget -qO /tmp/cmake.sh https://github.com/Kitware/CMake/releases/download/v3.19.8/cmake-3.19.8-Linux-x86_64.sh \

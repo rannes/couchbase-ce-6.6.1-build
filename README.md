@@ -30,3 +30,5 @@ Artifact `couchbase-ce-6.6.1` will be attached to the workflow run.
 - `tlm/cmake/Modules/CBDownloadDeps.cmake` — Go download URL rewritten
   from `storage.googleapis.com/golang/` (404s on old versions) to
   `dl.google.com/go/`.
+- Container locale set to `en_US.UTF-8` — CMake's tar wrapper rejects
+  non-ASCII filenames inside Go tarballs without a UTF-8 locale.
