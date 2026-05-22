@@ -28,7 +28,9 @@ sed -i 's|http://storage.googleapis.com/golang|https://dl.google.com/go|g' \
   tlm/cmake/Modules/CBDownloadDeps.cmake
 
 # CE build: disable enterprise modules.
-make -j"$(nproc)" EXTRA_CMAKE_OPTIONS="-DBUILD_ENTERPRISE=OFF"
+# Bionic's gcc 7.5 defaults to PIE; cbdep prebuilt static libs (flatbuffers, etc.)
+# are non-PIC, so linking PIE executables against them fails. Disable PIE globally.
+make -j"$(nproc)" EXTRA_CMAKE_OPTIONS="-DBUILD_ENTERPRISE=OFF -DCMAKE_POSITION_INDEPENDENT_CODE=OFF -DCMAKE_EXE_LINKER_FLAGS=-no-pie"
 
 echo "=== Build artifacts ==="
 ls -la /work/install/ 2>/dev/null || echo "no install dir"

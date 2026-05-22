@@ -32,3 +32,6 @@ Artifact `couchbase-ce-6.6.1` will be attached to the workflow run.
   `dl.google.com/go/`.
 - Container locale set to `en_US.UTF-8` — CMake's tar wrapper rejects
   non-ASCII filenames inside Go tarballs without a UTF-8 locale.
+- Linker: `-no-pie` + `CMAKE_POSITION_INDEPENDENT_CODE=OFF`. Bionic's
+  default-PIE binaries can't link against the cbdep prebuilt
+  flatbuffers/etc. static libs (compiled non-PIC for that era).
