@@ -1,0 +1,60 @@
+name: build-couchbase-ce-6.6.1
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+
+jobs:
+  build:
+    runs-on: ubuntu-22.04
+    timeout-minutes: 240
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Free up disk
+        run: |
+          sudo rm -rf /usr/share/dotnet /usr/local/lib/android /opt/ghc /opt/hostedtoolcache/CodeQL
+          sudo docker image prune --all --force
+          df -h
+
+      - name: Build builder image
+        run: docker build -t cb661-build .
+
+      - name: Compile Couchbase 6.6.1 CE
+        run: |
+          mkdir -p work
+          cp build.sh work/build.sh
+          docker run --rm \
+            -v "$PWD/work:/work" \
+            cb661-build bash /work/build.sh
+
+      - name: Package install dir
+        if: always()
+        run: |
+          if [ -d work/install ]; then
+            tar -czf couchbase-ce-6.6.1-linux-amd64.tar.gz -C work install
+            ls -lh couchbase-ce-6.6.1-linux-amd64.tar.gz
+          else
+            echo "No install dir produced"
+            ls -la work/ || true
+          fi
+
+      - name: Upload build log
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: build-log
+          path: |
+            work/build/CMakeFiles/CMakeOutput.log
+            work/build/CMakeFiles/CMakeError.log
+          if-no-files-found: ignore
+
+      - name: Upload binary
+        if: success()
+        uses: actions/upload-artifact@v4
+        with:
+          name: couchbase-ce-6.6.1
+          path: couchbase-ce-6.6.1-linux-amd64.tar.gz
+          if-no-files-found: error
